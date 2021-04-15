@@ -4,7 +4,7 @@ public class Person {
     public String name;
     public int age;
     public String address;
-    public String licensePlate;
+    public String LicencePlate;
     public String description;
 
     @Override
@@ -13,7 +13,7 @@ public class Person {
                 "name='" + name + '\'' +
                 ", age=" + age +
                 ", address='" + address + '\'' +
-                ", licensePlate='" + licensePlate + '\'' +
+                ", LicencePlate='" + LicencePlate + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
