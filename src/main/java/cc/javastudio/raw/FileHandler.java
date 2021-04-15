@@ -18,22 +18,22 @@ public class FileHandler implements Closeable{
                     String description) throws IOException {
         dbFile.seek(dbFile.length());
         // calculate the the total length of the record
-        int recordLength =  INT_LENGTH + name.length() +
+        int recordLength =  INT_LENGTH + name.getBytes().length + //int.length telt aantal karakters. maar we moeten het aantal bytes hebben om problemen met ñ
                 INT_LENGTH +
-                INT_LENGTH + address.length() +
-                INT_LENGTH + licencePlate.length() +
-                INT_LENGTH + description.length();
+                INT_LENGTH + address.getBytes().length +
+                INT_LENGTH + licencePlate.getBytes().length +
+                INT_LENGTH + description.getBytes().length;
 
         dbFile.writeBoolean(false);
         dbFile.writeInt(recordLength);
-        dbFile.writeInt(name.length());
+        dbFile.writeInt(name.getBytes().length);
         dbFile.write(name.getBytes());
         dbFile.writeInt(age);
-        dbFile.writeInt(address.length());
+        dbFile.writeInt(address.getBytes().length);
         dbFile.write(address.getBytes());
-        dbFile.writeInt(licencePlate.length());
+        dbFile.writeInt(licencePlate.getBytes().length);
         dbFile.write(licencePlate.getBytes());
-        dbFile.writeInt(description.length());
+        dbFile.writeInt(description.getBytes().length);
         dbFile.write(description.getBytes());
     }
 
