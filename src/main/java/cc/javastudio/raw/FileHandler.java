@@ -2,10 +2,11 @@ package cc.javastudio.raw;
 
 import java.io.*;
 
-public class FileHandler implements Closeable{
+public final class FileHandler implements Closeable{
     private final int INT_LENGTH = 4;
     private final int BYTE_LENGTH = 1;
     private RandomAccessFile dbFile;
+
 
     public FileHandler(String dbFileName) throws FileNotFoundException {
         dbFile = new RandomAccessFile(dbFileName, "rw");
