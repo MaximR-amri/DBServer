@@ -17,7 +17,10 @@ public final class FileHandler implements Closeable{
                     String address,
                     String licencePlate,
                     String description) throws IOException {
-        dbFile.seek(dbFile.length());
+        //position file pointer to end of the file
+        long currentInsertPosition = dbFile.length();
+        Index.getInstance().add(currentInsertPosition);
+        dbFile.seek(currentInsertPosition);
         // calculate the the total length of the record
         int recordLength =  INT_LENGTH + name.getBytes().length + //int.length telt aantal karakters. maar we moeten het aantal bytes hebben om problemen met ñ
                 INT_LENGTH +
@@ -38,9 +41,11 @@ public final class FileHandler implements Closeable{
         dbFile.write(description.getBytes());
     }
 
-    public Person readRow(int rowNumber) throws IOException {
+    public Person readRow(long rowNumber) throws IOException {
+        long bytePosition = Index.getInstance().getBytePosition(rowNumber);
+        if(bytePosition == -1) return null;
 
-        byte[] rawData = readRawRow(0);
+        byte[] rawData = readRawRow(bytePosition);
         DataInputStream stream = new DataInputStream(new ByteArrayInputStream(rawData));
 
         Person person = new Person();
@@ -69,9 +74,9 @@ public final class FileHandler implements Closeable{
         return person;
     }
 
-    private byte[] readRawRow(int rowNumber) throws IOException {
-        int pos = 0;
-        dbFile.seek(pos);
+    private byte[] readRawRow(long bytePosition) throws IOException {
+
+        dbFile.seek(bytePosition);
         if (dbFile.readBoolean()) {
             return new byte[0];
         } else {
