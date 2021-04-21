@@ -18,9 +18,9 @@ public final class FileHandler implements Closeable{
                     String licencePlate,
                     String description) throws IOException {
         //position file pointer to end of the file
-        long currentInsertPosition = dbFile.length();
-        Index.getInstance().add(currentInsertPosition);
-        dbFile.seek(currentInsertPosition);
+        long bytePosition = dbFile.length();
+        Index.getInstance().add(bytePosition);
+        dbFile.seek(bytePosition);
         // calculate the the total length of the record
         int recordLength =  INT_LENGTH + name.getBytes().length + //int.length telt aantal karakters. maar we moeten het aantal bytes hebben om problemen met ñ
                 INT_LENGTH +
@@ -85,6 +85,23 @@ public final class FileHandler implements Closeable{
             dbFile.read(rawData);
             return rawData;
         }
+    }
+
+    public void loadIndex() throws IOException {
+       if(dbFile.length() ==0){
+           return;
+       }
+       long bytePos = 0;
+       while(bytePos < dbFile.length()){
+           dbFile.seek(bytePos);
+           boolean isDeleted = dbFile.readBoolean();
+           if(!isDeleted){
+               Index.getInstance().add(bytePos);
+           }
+           bytePos += BYTE_LENGTH;
+           int recordLength = dbFile.readInt();
+           bytePos += INT_LENGTH + recordLength;
+       }
     }
 
     public void close() throws IOException {
